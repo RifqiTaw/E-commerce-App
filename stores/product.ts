@@ -1,65 +1,67 @@
 import { defineStore } from "pinia";
 import type { Product } from "~/types";
+import { useApi } from "~/lib/axios";
 
 export const useProductStore = defineStore("product", {
   state: () => ({
     products: [] as Product[],
+    selectedProduct: null as Product | null,
     loading: false,
-    error: null as string | null,
+    error: "" as string | null,
   }),
 
   actions: {
     async fetchProducts() {
-      if (this.products.length > 0) return;
-
       this.loading = true;
       this.error = null;
+      const api = useApi();
 
       try {
-        const res = await fetch("https://fakestoreapi.com/products");
-        if (!res.ok) throw new Error("Failed to fetch products");
-        this.products = await res.json();
-      } catch (err) {
-        this.error = err instanceof Error ? err.message : "An error occurred";
+        const { data } = await api.get<Product[]>("/products");
+        this.products = data;
+      } catch (err: any) {
+        this.error = err.message || "Failed to load products";
       } finally {
         this.loading = false;
       }
     },
 
-    async fetchProductById(id: number): Promise<Product | null> {
+    async fetchProductById(id: number) {
+      this.loading = true;
+      this.error = null;
+      const api = useApi();
+
       try {
-        const res = await fetch(`https://fakestoreapi.com/products/${id}`);
-        if (!res.ok) throw new Error("Product not found");
-        return await res.json();
-      } catch (err) {
-        this.error = err instanceof Error ? err.message : "An error occurred";
-        return null;
+        const { data } = await api.get<Product>(`/products/${id}`);
+        this.selectedProduct = data;
+      } catch (err: any) {
+        this.error = err.message || "Failed to load product detail";
+        this.selectedProduct = null;
+      } finally {
+        this.loading = false;
       }
     },
 
-    async fetchProductsByCategory(category: string): Promise<Product[]> {
-      this.loading = true;
-      this.error = null;
+    async fetchProductsByCategory(category: string) {
+      const api = useApi();
       try {
-        const res = await fetch(
-          `https://fakestoreapi.com/products/category/${category}`
+        const { data } = await api.get<Product[]>(
+          `/products/category/${category}`
         );
-        if (!res.ok) throw new Error("Failed to fetch products");
-        return await res.json();
+        return data;
       } catch (err) {
-        this.error = err instanceof Error ? err.message : "An error occurred";
+        console.error(err);
         return [];
-      } finally {
-        this.loading = false;
       }
     },
 
-    async getCategories(): Promise<string[]> {
+    async getCategories() {
+      const api = useApi();
       try {
-        const res = await fetch("https://fakestoreapi.com/products/categories");
-        if (!res.ok) throw new Error("Failed to fetch categories");
-        return await res.json();
-      } catch {
+        const { data } = await api.get<string[]>("/products/categories");
+        return data;
+      } catch (err) {
+        console.error(err);
         return [];
       }
     },

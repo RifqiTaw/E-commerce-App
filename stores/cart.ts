@@ -1,72 +1,64 @@
 import { defineStore } from "pinia";
 import type { Product } from "~/types";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
-export interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
+interface CartItem {
+  product: Product;
   quantity: number;
 }
 
-const CART_KEY = "pinia_cart_items";
-
 export const useCartStore = defineStore("cart", {
   state: () => ({
-    items: [] as CartItem[],
+    cartItems: [] as CartItem[],
   }),
 
   getters: {
     total: (state) =>
-      state.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    count: (state) => state.items.reduce((sum, item) => sum + item.quantity, 0),
+      state.cartItems.reduce(
+        (sum, item) => sum + item.product.price * item.quantity,
+        0
+      ),
+    itemCount: (state) =>
+      state.cartItems.reduce((count, item) => count + item.quantity, 0),
+    getCartTotal: (state) =>
+      state.cartItems.reduce(
+        (sum, item) => sum + item.product.price * item.quantity,
+        0
+      ),
   },
 
   actions: {
     loadCart() {
-      if (!process.client) return;
-      const saved = localStorage.getItem(CART_KEY);
-      this.items = saved ? JSON.parse(saved) : [];
+      const saved = localStorage.getItem("cart");
+      if (saved) this.cartItems = JSON.parse(saved);
     },
 
     saveCart() {
-      if (process.client) {
-        localStorage.setItem(CART_KEY, JSON.stringify(this.items));
-      }
+      localStorage.setItem("cart", JSON.stringify(this.cartItems));
     },
 
     addToCart(product: Product, quantity = 1) {
-      const existing = this.items.find((i) => i.id === product.id);
+      const existing = this.cartItems.find((i) => i.product.id === product.id);
       if (existing) {
         existing.quantity += quantity;
       } else {
-        this.items.push({
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          image: product.image,
-          quantity,
-        });
+        this.cartItems.push({ product, quantity });
       }
       this.saveCart();
-    },
-
-    updateQuantity(id: number, quantity: number) {
-      const item = this.items.find((i) => i.id === id);
-      if (item && quantity > 0) {
-        item.quantity = quantity;
-        this.saveCart();
-      }
+      toast.success(`${product.title} added to cart`);
     },
 
     removeFromCart(id: number) {
-      this.items = this.items.filter((i) => i.id !== id);
+      this.cartItems = this.cartItems.filter((i) => i.product.id !== id);
       this.saveCart();
+      toast.info("Item removed from cart");
     },
 
     clearCart() {
-      this.items = [];
+      this.cartItems = [];
       this.saveCart();
+      toast.info("Cart cleared");
     },
   },
 });
