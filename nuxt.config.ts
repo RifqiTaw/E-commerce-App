@@ -1,22 +1,22 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  // modules: ['@nuxtjs/tailwindcss'],
 
   css: ["~/assets/css/main.css"],
   postcss: {
     plugins: {
-      '@tailwindcss/postcss': {},
+      "@tailwindcss/postcss": {},
       autoprefixer: {},
     },
   },
 
-  // runtimeConfig: {
-  //   public: {
-  //     supabaseUrl: process.env.VITE_SUPABASE_URL,
-  //     supabaseAnonKey: process.env.VITE_SUPABASE_ANON_KEY,
-  //   }
-  // },
+  modules: ["@nuxt/image"],
+
+  runtimeConfig: {
+    public: {
+      fakeStoreBaseUrl: process.env.NUXT_BASE_API_URL_FAKESTOREAPI,
+    },
+  },
 
   app: {
     head: {

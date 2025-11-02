@@ -1,4 +1,3 @@
-// composables/useNotify.ts
 import { toast } from "vue3-toastify";
 
 export const useNotify = () => {

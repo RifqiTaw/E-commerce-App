@@ -1,3 +1,115 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+:root {
+  --color-primary-start: #3b82f6;
+  --color-primary-end: #6366f1;
+  --color-success-start: #22c55e;
+  --color-success-end: #16a34a;
+  --color-warning-start: #f59e0b;
+  --color-warning-end: #d97706;
+  --color-danger-start: #ef4444;
+  --color-danger-end: #dc2626;
+  --color-secondary-start: #a855f7;
+  --color-secondary-end: #6366f1;
+}
+
+body {
+  @apply bg-gray-50 text-gray-800 antialiased;
+}
+
+/* =====================
+  INPUT FIELD STYLE
+===================== */
+.input-field {
+  @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 
+         focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+         transition duration-150 ease-in-out;
+}
+
+.input-field.border-red-500 {
+  @apply border-red-500 focus:ring-red-500;
+}
+
+select.input-field {
+  @apply bg-white cursor-pointer appearance-none;
+}
+
+.input-field::placeholder {
+  @apply text-gray-400;
+}
+
+/* =====================
+  BASE BUTTON STYLE
+===================== */
+.btn {
+  @apply inline-flex items-center justify-center font-medium rounded-lg
+         px-4 py-2 transition duration-300 ease-in-out 
+         focus:outline-none focus:ring-2 focus:ring-offset-2
+         disabled:opacity-50 disabled:cursor-not-allowed
+         cursor-pointer active:scale-95;
+}
+
+.btn-primary {
+  @apply text-white bg-gradient-to-r from-blue-500 to-indigo-600
+         hover:from-blue-600 hover:to-indigo-700
+         focus:ring-indigo-400;
+}
+
+.btn-secondary {
+  @apply text-white bg-gradient-to-r from-purple-500 to-indigo-500
+         hover:from-purple-600 hover:to-indigo-600
+         focus:ring-purple-400;
+}
+
+.btn-success {
+  @apply text-white bg-gradient-to-r from-green-500 to-green-600
+         hover:from-green-600 hover:to-green-700
+         focus:ring-green-400;
+}
+
+.btn-warning {
+  @apply text-white bg-gradient-to-r from-amber-500 to-amber-600
+         hover:from-amber-600 hover:to-amber-700
+         focus:ring-amber-400;
+}
+
+.btn-danger {
+  @apply text-white bg-gradient-to-r from-red-500 to-red-600
+         hover:from-red-600 hover:to-red-700
+         focus:ring-red-400;
+}
+
+.btn-outline-primary {
+  @apply border-2 border-transparent text-blue-600 
+         bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent
+         hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600
+         focus:ring-indigo-400;
+}
+
+.btn-outline-secondary {
+  @apply border-2 border-transparent text-purple-600
+         bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent
+         hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-indigo-600
+         focus:ring-purple-400;
+}
+
+.btn-outline-success {
+  @apply border-2 border-transparent text-green-600
+         bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent
+         hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600
+         focus:ring-green-400;
+}
+
+.btn-outline-warning {
+  @apply border-2 border-transparent text-amber-600
+         bg-gradient-to-r from-amber-500 to-amber-600 bg-clip-text text-transparent
+         hover:text-white hover:bg-gradient-to-r hover:from-amber-500 hover:to-amber-600
+         focus:ring-amber-400;
+}
+
+.btn-outline-danger {
+  @apply border-2 border-transparent text-red-600
+         bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent
+         hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-red-600
+         focus:ring-red-400;
+}
