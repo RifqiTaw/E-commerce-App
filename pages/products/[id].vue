@@ -1,105 +1,107 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { useProductStore } from "~/stores/product";
+import { useCartStore } from "~/stores/cart";
 import type { Product } from "~/types";
 
+import {
+  ArrowLeftIcon,
+  MinusIcon,
+  PlusIcon,
+  ShoppingCartIcon,
+  LockClosedIcon,
+  CheckCircleIcon,
+} from "@heroicons/vue/24/outline";
+
 const route = useRoute();
-const { fetchProductById } = useProducts();
-const { addToCart, loadCart } = useCart();
+const productStore = useProductStore();
+const cartStore = useCartStore();
+
+const { loading, error } = storeToRefs(productStore);
 
 const product = ref<Product | null>(null);
-const loading = ref(true);
-const quantity = ref(1);
-const adding = ref(false);
-const showSuccess = ref(false);
+const quantity = ref<number>(1);
+const adding = ref<boolean>(false);
+const showSuccess = ref<boolean>(false);
 
 const increaseQuantity = () => {
   quantity.value++;
 };
 
 const decreaseQuantity = () => {
-  if (quantity.value > 1) {
-    quantity.value--;
-  }
+  if (quantity.value > 1) quantity.value--;
 };
 
 const handleAddToCart = async () => {
   if (!product.value) return;
-
   adding.value = true;
 
-  const success = await addToCart(
-    {
-      id: product.value.id,
-      title: product.value.title,
-      price: product.value.price,
-      image: product.value.image,
-    },
-    quantity.value
-  );
+  cartStore.addToCart(product.value, quantity.value);
+  cartStore.loadCart();
 
-  if (success) {
-    await loadCart();
-    showSuccess.value = true;
-    setTimeout(() => {
-      showSuccess.value = false;
-    }, 3000);
-  }
+  showSuccess.value = true;
+  setTimeout(() => (showSuccess.value = false), 3000);
 
   adding.value = false;
 };
 
 onMounted(async () => {
   const productId = parseInt(route.params.id as string);
-  product.value = await fetchProductById(productId);
-  loading.value = false;
+  await productStore.fetchProductById(productId);
+  product.value = productStore.selectedProduct;
 });
 </script>
 
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Back Button -->
     <button
       @click="$router.back()"
-      class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+      class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors cursor-pointer"
     >
-      <svg
-        class="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 19l-7-7 7-7"
-        />
-      </svg>
+      <ArrowLeftIcon class="w-5 h-5" />
       <span class="font-medium">Back to Products</span>
     </button>
 
+    <!-- Loader -->
     <div v-if="loading" class="flex justify-center items-center py-20">
       <div
         class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"
       ></div>
     </div>
 
+    <!-- Error -->
+    <div v-else-if="error" class="text-center py-20">
+      <div class="text-red-500 text-xl mb-4">{{ error }}</div>
+      <NuxtLink to="/" class="btn-primary">Go Back</NuxtLink>
+    </div>
+
+    <!-- Not Found -->
     <div v-else-if="!product" class="text-center py-20">
       <div class="text-red-500 text-xl mb-4">Product not found</div>
       <NuxtLink to="/" class="btn-primary">Go to Products</NuxtLink>
     </div>
 
+    <!-- Product Detail -->
     <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Product Image -->
       <div class="bg-white rounded-lg shadow-md p-8">
         <div
           class="aspect-square bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center"
         >
-          <img
+          <NuxtImg
             :src="product.image"
             :alt="product.title"
             class="w-full h-full object-contain p-8"
+            format="webp"
+            quality="80"
+            width="500"
+            height="500"
           />
         </div>
       </div>
 
+      <!-- Product Details -->
       <div class="flex flex-col">
         <div class="mb-4">
           <span
@@ -113,6 +115,7 @@ onMounted(async () => {
           {{ product.title }}
         </h1>
 
+        <!-- Rating -->
         <div class="flex items-center space-x-4 mb-6">
           <div class="flex items-center space-x-1">
             <div class="flex">
@@ -139,6 +142,7 @@ onMounted(async () => {
           <span class="text-gray-500">{{ product.rating.count }} reviews</span>
         </div>
 
+        <!-- Price -->
         <div class="mb-8">
           <p class="text-4xl font-bold text-gray-900 mb-2">
             ${{ product.price.toFixed(2) }}
@@ -146,6 +150,7 @@ onMounted(async () => {
           <p class="text-green-600 font-medium">In Stock</p>
         </div>
 
+        <!-- Description -->
         <div class="mb-8">
           <h2 class="text-xl font-semibold text-gray-900 mb-3">Description</h2>
           <p class="text-gray-700 leading-relaxed">
@@ -153,27 +158,16 @@ onMounted(async () => {
           </p>
         </div>
 
+        <!-- Quantity -->
         <div class="flex items-center space-x-4 mb-8">
           <label class="font-semibold text-gray-900">Quantity:</label>
           <div class="flex items-center border border-gray-300 rounded-lg">
             <button
               @click="decreaseQuantity"
-              class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors"
+              class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
               :disabled="quantity <= 1"
             >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 12H4"
-                />
-              </svg>
+              <MinusIcon class="w-4 h-4" />
             </button>
             <span
               class="px-6 py-2 font-semibold text-gray-900 border-x border-gray-300"
@@ -181,85 +175,30 @@ onMounted(async () => {
             >
             <button
               @click="increaseQuantity"
-              class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors"
+              class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
             >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <PlusIcon class="w-4 h-4" />
             </button>
           </div>
         </div>
 
+        <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-4">
           <button
             @click="handleAddToCart"
             :disabled="adding"
-            class="btn-primary flex-1 text-lg py-3 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn btn-primary flex-1 text-lg py-3 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            <svg
-              v-if="!adding"
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            <svg
-              v-else
-              class="w-6 h-6 animate-spin"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+            <ShoppingCartIcon v-if="!adding" class="w-6 h-6" />
+            <LockClosedIcon v-else class="w-6 h-6 animate-spin" />
             <span>{{ adding ? "Adding to Cart..." : "Add to Cart" }}</span>
           </button>
 
           <NuxtLink
             to="/cart"
-            class="btn-secondary flex-1 text-lg py-3 flex items-center justify-center space-x-2"
+            class="btn btn-secondary flex-1 text-lg py-3 flex items-center justify-center space-x-2 cursor-pointer"
           >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
+            <ShoppingCartIcon class="w-6 h-6" />
             <span>View Cart</span>
           </NuxtLink>
         </div>
@@ -268,19 +207,7 @@ onMounted(async () => {
           v-if="showSuccess"
           class="mt-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center space-x-2"
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+          <CheckCircleIcon class="w-5 h-5" />
           <span class="font-medium">Added to cart successfully!</span>
         </div>
       </div>

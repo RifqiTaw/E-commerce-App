@@ -3,6 +3,7 @@ import { storeToRefs } from "pinia";
 import { useProductStore } from "~/stores/product";
 import { useCartStore } from "~/stores/cart";
 import type { Product } from "~/types";
+import BaseSpinner from "~/components/BaseSpinner.vue";
 
 const productStore = useProductStore();
 const cartStore = useCartStore();
@@ -35,7 +36,7 @@ onMounted(async () => {
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-8">
-      <h1 class="text-4xl font-bold text-gray-900 mb-2">Featured Products</h1>
+      <h1 class="text-3xl font-bold mb-2">Featured Products</h1>
       <p class="text-gray-600">
         Discover our latest collection of premium products
       </p>
@@ -47,10 +48,10 @@ onMounted(async () => {
         <button
           @click="filterByCategory(null)"
           :class="[
-            'px-4 py-2 rounded-lg font-medium transition-colors',
+            'px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer',
             selectedCategory === null
               ? 'bg-blue-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100',
+              : 'bg-white hover:bg-gray-200',
           ]"
         >
           All Products
@@ -60,10 +61,10 @@ onMounted(async () => {
           :key="category"
           @click="filterByCategory(category)"
           :class="[
-            'px-4 py-2 rounded-lg font-medium transition-colors capitalize',
+            'px-4 py-2 rounded-lg font-medium transition-colors capitalize cursor-pointer',
             selectedCategory === category
               ? 'bg-blue-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100',
+              : 'bg-white hover:bg-gray-100',
           ]"
         >
           {{ category }}
@@ -72,16 +73,14 @@ onMounted(async () => {
     </div>
 
     <!-- Loader -->
-    <div v-if="loading" class="flex justify-center items-center py-20">
-      <div
-        class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"
-      ></div>
-    </div>
+    <template v-if="loading">
+      <BaseSpinner size="lg" text="Loading products..." />
+    </template>
 
     <!-- Error -->
     <div v-else-if="error" class="text-center py-20">
       <div class="text-red-500 text-xl mb-4">{{ error }}</div>
-      <button @click="loadProducts" class="btn-primary">Try Again</button>
+      <button @click="loadProducts" class="btn btn-primary">Try Again</button>
     </div>
 
     <!-- Empty -->
@@ -89,7 +88,7 @@ onMounted(async () => {
       <p class="text-gray-500 text-xl">No products found</p>
     </div>
 
-    <!-- Product Grid -->
+    <!-- Product Card -->
     <div
       v-else
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
