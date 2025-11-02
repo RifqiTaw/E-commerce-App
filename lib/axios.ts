@@ -1,18 +1,20 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "https://fakestoreapi.com",
-  timeout: 5000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+export const useApi = () => {
+  const config = useRuntimeConfig();
 
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+  const api = axios.create({
+    baseURL: config.public.fakeStoreBaseUrl,
+    timeout: 5000,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-export default api;
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => Promise.reject(error)
+  );
+
+  return api;
+};
