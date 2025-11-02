@@ -1,16 +1,3 @@
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-}
-
 export interface CartItem {
   id?: string;
   product_id: number;
@@ -42,4 +29,19 @@ export interface Order {
   shipping_address: string;
   items: CartItem[];
   created_at?: string;
+}
+
+export interface Rating {
+  rate: number;
+  count: number;
+}
+
+export interface Product {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
+  rating: Rating;
 }
