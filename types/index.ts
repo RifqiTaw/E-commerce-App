@@ -16,9 +16,6 @@ export interface CheckoutForm {
   city: string;
   postalCode: string;
   country: string;
-  cardNumber: string;
-  cardExpiry: string;
-  cardCvc: string;
 }
 
 export interface Order {
