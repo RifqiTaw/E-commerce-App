@@ -14,7 +14,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      fakeStoreBaseUrl: process.env.NUXT_BASE_API_URL_FAKESTOREAPI,
+      fakeStoreBaseUrl: process.env.URL_FAKESTOREAPI,
+      stripeCheckoutUrl: process.env.STRIPE_CHECKOUT_URL,
     },
   },
 
@@ -29,6 +30,7 @@ export default defineNuxtConfig({
           content: "Modern e-commerce store built with Nuxt 3",
         },
       ],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/e-commerce.png" }],
     },
   },
 });
