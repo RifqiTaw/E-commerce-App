@@ -44,33 +44,35 @@ onMounted(async () => {
 
     <!-- Categories -->
     <div v-if="!loading && categories.length > 0" class="mb-8">
-      <div class="flex flex-wrap gap-2">
-        <button
-          @click="filterByCategory(null)"
-          :class="[
-            'px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer',
-            selectedCategory === null
-              ? 'bg-blue-600 text-white'
-              : 'bg-white hover:bg-gray-200',
-          ]"
-        >
-          All Products
-        </button>
-        <button
-          v-for="category in categories"
-          :key="category"
-          @click="filterByCategory(category)"
-          :class="[
-            'px-4 py-2 rounded-lg font-medium transition-colors capitalize cursor-pointer',
-            selectedCategory === category
-              ? 'bg-blue-600 text-white'
-              : 'bg-white hover:bg-gray-100',
-          ]"
-        >
-          {{ category }}
-        </button>
-      </div>
-    </div>
+  <div class="flex flex-wrap gap-3">
+    <button
+      @click="filterByCategory(null)"
+      :class="[
+        'px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm border cursor-pointer',
+        selectedCategory === null
+          ? 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-md scale-105'
+          : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100 hover:shadow-md',
+      ]"
+    >
+      All Products
+    </button>
+
+    <button
+      v-for="category in categories"
+      :key="category"
+      @click="filterByCategory(category)"
+      :class="[
+        'px-4 py-2 rounded-lg font-medium capitalize transition-all duration-200 shadow-sm border cursor-pointer',
+        selectedCategory === category
+          ? 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-md scale-105'
+          : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100 hover:shadow-md',
+      ]"
+    >
+      {{ category }}
+    </button>
+  </div>
+</div>
+
 
     <!-- Loader -->
     <template v-if="loading">

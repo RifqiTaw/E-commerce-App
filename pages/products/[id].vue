@@ -3,15 +3,14 @@ import { storeToRefs } from "pinia";
 import { useProductStore } from "~/stores/product";
 import { useCartStore } from "~/stores/cart";
 import type { Product } from "~/types";
-
 import {
   ArrowLeftIcon,
   MinusIcon,
   PlusIcon,
-  ShoppingCartIcon,
   LockClosedIcon,
   CheckCircleIcon,
 } from "@heroicons/vue/24/outline";
+import { PlusCircleIcon, ShoppingBagIcon } from "@heroicons/vue/24/outline";
 
 const route = useRoute();
 const productStore = useProductStore();
@@ -164,7 +163,7 @@ onMounted(async () => {
           <div class="flex items-center border border-gray-300 rounded-lg">
             <button
               @click="decreaseQuantity"
-              class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+              class="px-4 py-3 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
               :disabled="quantity <= 1"
             >
               <MinusIcon class="w-4 h-4" />
@@ -175,7 +174,7 @@ onMounted(async () => {
             >
             <button
               @click="increaseQuantity"
-              class="px-4 py-2 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+              class="px-4 py-3 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
             >
               <PlusIcon class="w-4 h-4" />
             </button>
@@ -189,16 +188,17 @@ onMounted(async () => {
             :disabled="adding"
             class="btn btn-primary flex-1 text-lg py-3 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            <ShoppingCartIcon v-if="!adding" class="w-6 h-6" />
+            <PlusCircleIcon v-if="!adding" class="w-6 h-6" />
             <LockClosedIcon v-else class="w-6 h-6 animate-spin" />
             <span>{{ adding ? "Adding to Cart..." : "Add to Cart" }}</span>
           </button>
 
+          <!-- View Cart Button -->
           <NuxtLink
             to="/cart"
             class="btn btn-secondary flex-1 text-lg py-3 flex items-center justify-center space-x-2 cursor-pointer"
           >
-            <ShoppingCartIcon class="w-6 h-6" />
+            <ShoppingBagIcon class="w-6 h-6" />
             <span>View Cart</span>
           </NuxtLink>
         </div>
