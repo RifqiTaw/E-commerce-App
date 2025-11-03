@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="bg-gradient-to-r from-[#0a286e] via-[#1e3a8a] to-[#1d52c4] text-white py-8 mt-12"
+    class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white py-8 mt-12"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -13,12 +13,18 @@
           <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
           <ul class="space-y-2">
             <li>
-              <NuxtLink to="/" class="hover:text-white transition-colors underline">
+              <NuxtLink
+                to="/"
+                class="hover:text-white transition-colors underline"
+              >
                 Products
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/cart" class="hover:text-white transition-colors underline">
+              <NuxtLink
+                to="/cart"
+                class="hover:text-white transition-colors underline"
+              >
                 Cart
               </NuxtLink>
             </li>

@@ -42,8 +42,9 @@ const onInput = (e: Event) => {
       class="block text-sm font-medium text-gray-700 mb-1"
       :for="id"
     >
-      {{ label }}
-    </label>
+      <span>{{ label.replace("*", "") }}</span>
+      <span v-if="label.includes('*')" class="text-red-500">*</span>
+    </label>  
 
     <template v-if="type !== 'select'">
       <input

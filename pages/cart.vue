@@ -83,7 +83,7 @@ const handleRemoveItem = (productId: number) => {
         <div
           v-for="item in cartItems"
           :key="item.product.id"
-          class="rounded-lg shadow-md p-4 sm:p-6 flex flex-col sm:flex-row gap-4"
+          class="rounded-lg shadow-md p-4 sm:p-6 flex flex-col sm:flex-row gap-4 bg-white"
         >
           <div
             class="w-full sm:w-32 h-32 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0"
@@ -111,7 +111,7 @@ const handleRemoveItem = (productId: number) => {
               <div class="flex items-center border border-gray-300 rounded-lg">
                 <button
                   @click="decreaseQuantity(item.product)"
-                  class="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+                  class="px-3 py-2 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
                   :disabled="item.quantity <= 1"
                 >
                   <MinusIcon class="w-4 h-4" />
@@ -122,7 +122,7 @@ const handleRemoveItem = (productId: number) => {
                 >
                 <button
                   @click="increaseQuantity(item.product)"
-                  class="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+                  class="px-3 py-2 text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <PlusIcon class="w-4 h-4" />
                 </button>
@@ -149,7 +149,7 @@ const handleRemoveItem = (productId: number) => {
 
       <!-- Right Section (Order Summary) -->
       <div class="lg:col-span-1">
-        <div class="rounded-lg shadow-md p-6 sticky top-20">
+        <div class="rounded-lg shadow-md p-6 sticky top-20 bg-white">
           <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
 
           <div class="space-y-3 mb-4">

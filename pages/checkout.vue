@@ -11,6 +11,8 @@ import {
   ArrowPathIcon,
 } from "@heroicons/vue/24/outline";
 
+const config = useRuntimeConfig();
+
 const router = useRouter();
 const cartStore = useCartStore();
 const orderStore = useOrderStore();
@@ -26,9 +28,6 @@ const form = reactive<CheckoutForm>({
   city: "",
   postalCode: "",
   country: "",
-  cardNumber: "",
-  cardExpiry: "",
-  cardCvc: "",
 });
 
 const errors = reactive<Partial<Record<keyof CheckoutForm, string>>>({});
@@ -49,22 +48,6 @@ const countries = [
   { label: "Indonesia", value: "ID" },
 ];
 
-const formatCardNumber = (e: Event) => {
-  const input = e.target as HTMLInputElement;
-  let value = input.value.replace(/\s/g, "");
-  let formattedValue = value.match(/.{1,4}/g)?.join(" ") || value;
-  form.cardNumber = formattedValue;
-};
-
-const formatExpiry = (e: Event) => {
-  const input = e.target as HTMLInputElement;
-  let value = input.value.replace(/\D/g, "");
-  if (value.length >= 2) {
-    value = value.substring(0, 2) + "/" + value.substring(2, 4);
-  }
-  form.cardExpiry = value;
-};
-
 const validateForm = (): boolean => {
   const fields: (keyof CheckoutForm)[] = [
     "firstName",
@@ -75,9 +58,6 @@ const validateForm = (): boolean => {
     "city",
     "postalCode",
     "country",
-    "cardNumber",
-    "cardExpiry",
-    "cardCvc",
   ];
 
   fields.forEach((key) => (errors[key] = ""));
@@ -102,17 +82,6 @@ const validateForm = (): boolean => {
   if (!form.country.trim())
     (errors.country = "Country is required"), (valid = false);
 
-  if (form.cardNumber.replace(/\s/g, "").length < 13)
-    (errors.cardNumber = "Valid card number is required"), (valid = false);
-
-  const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-  if (!expiryRegex.test(form.cardExpiry))
-    (errors.cardExpiry = "Valid expiry date (MM/YY) is required"),
-      (valid = false);
-
-  if (form.cardCvc.length < 3)
-    (errors.cardCvc = "Valid CVC is required"), (valid = false);
-
   return valid;
 };
 
@@ -128,9 +97,10 @@ const handleSubmit = async () => {
   try {
     const newOrder = await orderStore.placeOrder(form);
     orderNumber.value = newOrder.order_number;
-    orderSuccess.value = true;
+
     window.scrollTo({ top: 0, behavior: "smooth" });
-    console.log("newOrder", newOrder);
+
+    window.location.href = config.public.stripeCheckoutUrl;
   } catch (error) {
     console.error("Error placing order:", error);
     alert("Failed to place order. Please try again.");
@@ -184,9 +154,9 @@ onMounted(async () => {
       @submit.prevent="handleSubmit"
       class="grid grid-cols-1 lg:grid-cols-3 gap-8"
     >
-      <div class="lg:col-span-2 space-y-6">
+      <div class="lg:col-span-2">
         <!-- Contact Info -->
-        <div class="rounded-lg shadow-md p-6">
+        <div class="rounded-lg shadow-md p-6 bg-white mb-4">
           <h2 class="text-xl font-semibold mb-4">Contact Information</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInput
@@ -248,41 +218,6 @@ onMounted(async () => {
                 :options="countries"
                 required
                 :error="errors.country"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Payment -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-semibold mb-4">Payment Information</h2>
-          <div class="space-y-4">
-            <FormInput
-              v-model="form.cardNumber"
-              label="Card Number *"
-              placeholder="4242 4242 4242 4242"
-              required
-              :maxlength="19"
-              :error="errors.cardNumber"
-              :onInput="formatCardNumber"
-            />
-            <div class="grid grid-cols-2 gap-4">
-              <FormInput
-                v-model="form.cardExpiry"
-                label="Expiry Date *"
-                placeholder="MM/YY"
-                required
-                :maxlength="5"
-                :error="errors.cardExpiry"
-                :onInput="formatExpiry"
-              />
-              <FormInput
-                v-model="form.cardCvc"
-                label="CVC *"
-                placeholder="123"
-                required
-                :maxlength="4"
-                :error="errors.cardCvc"
               />
             </div>
           </div>

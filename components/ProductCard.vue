@@ -19,7 +19,7 @@ const handleAddToCart = async () => {
 
 <template>
   <div
-    class="card flex flex-col overflow-hidden group rounded-2xl shadow hover:shadow-lg transition-shadow"
+    class="card flex flex-col overflow-hidden group rounded-2xl shadow hover:shadow-lg transition-shadow bg-white"
   >
     <NuxtLink :to="`/products/${product.id}`" class="block">
       <div class="relative aspect-square bg-gray-100 overflow-hidden">
