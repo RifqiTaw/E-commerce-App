@@ -1,75 +1,22 @@
-# Nuxt Minimal Starter
+# 🛍️ Nuxt 3 E-Commerce Starter
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A modern **E-Commerce Web App** built with **Nuxt 3 (Composition API + TypeScript)**.  
+This project integrates **Stripe Checkout** for secure online payments and uses a clean, responsive design powered by **Tailwind CSS**.
 
-## Setup
+---
 
-Make sure to install dependencies:
+## 🚀 Tech Stack
 
-```bash
-# npm
-npm install
+| Category           | Technology                                                   |
+| ------------------ | ------------------------------------------------------------ |
+| Framework          | [Nuxt 3](https://nuxt.com/)                                  |
+| Language           | TypeScript                                                   |
+| State Management   | [Pinia](https://pinia.vuejs.org/)                            |
+| Styling            | [Tailwind CSS](https://tailwindcss.com/)                     |
+| Icons              | [Heroicons Vue](https://github.com/tailwindlabs/heroicons)   |
+| HTTP Client        | [Axios](https://axios-http.com/)                             |
+| Notifications      | [Vue3 Toastify](https://vue3-toastify.js.org/)               |
+| Image Optimization | [@nuxt/image](https://image.nuxt.com/)                       |
+| Payment            | [Stripe Checkout](https://stripe.com/docs/payments/checkout) |
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+---
